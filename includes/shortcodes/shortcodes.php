@@ -183,93 +183,99 @@ $atts = array(
 				endwhile;
 				wp_reset_postdata();
 				wp_reset_query();
-
+				
+				
+				/* filter */
+				if( $filter &&  $post_type != 'bg_instagram' ){
+					echo _filter_nav_render($atts);
+				}
+				
+				$_class = ( $light_box || $post_type == 'bg_gallery' ) ? 'bg-light-gallery' : '';
+				$_class .= ( $type == 'masonry' || $type == 'grid' ) ? ' bg-masonry-items' : '';
+				$_class .= ( $type == 'carousel' ) ? ' bg-owl-carousel' : '';
+				
+				?>
+				<div class="bg--items <?php echo $_class; ?>">
+					<?php 
+						if($type != 'carousel'){
+							?>
+							<div class="grid-sizer" style="width: <?php echo $width; ?>;"></div> 
+							<div class="gutter-sizer" style="width: <?php echo $_space; ?>;"></div>
+							<?php
+						}
+					
+						include BG_INC_PATH . 'shortcodes/layout/' . $type . '.php'; 
+					?>
+				</div>
+				<div class="bg--actions">
+					<div class="loading"></div>
+					<?php 
+						if($number != '-1' && $id == '' && $type != 'carousel' && $more){
+							$more_class = ($post_type == 'bg_instagram') ? 'load-more-instagram' : 'load-more-post';
+							?>
+							<div class="load-more <?php echo $more_class; ?>" data-offset="<?php echo $number; ?>" data-nextid='<?php echo $next_max_id; ?>' data-nexturl='<?php echo $next_url; ?>'><?php echo __( 'Load more', 'bears-grid' ); ?></div>
+							<?php
+						}
+					?>
+				</div>
+				<div class="bg-popup-wrapper">
+					<a href="#" class="bg-popup-close">
+						<svg viewBox="0 0 64 64">
+							<path d="M28.941,31.786L0.613,60.114c-0.787,0.787-0.787,2.062,0,2.849c0.393,0.394,0.909,0.59,1.424,0.59   c0.516,0,1.031-0.196,1.424-0.59l28.541-28.541l28.541,28.541c0.394,0.394,0.909,0.59,1.424,0.59c0.515,0,1.031-0.196,1.424-0.59   c0.787-0.787,0.787-2.062,0-2.849L35.064,31.786L63.41,3.438c0.787-0.787,0.787-2.062,0-2.849c-0.787-0.786-2.062-0.786-2.848,0   L32.003,29.15L3.441,0.59c-0.787-0.786-2.061-0.786-2.848,0c-0.787,0.787-0.787,2.062,0,2.849L28.941,31.786z"/>
+						</svg>
+					</a>
+					<div clas="bg-popup-inner">
+						<div class="bg-popup-media" style="background-image: url(<?php echo BG_DIR_URL ?>assets/images/16x9.png)"></div>
+						<div class="bg-popup-info">
+							<div class="bg-popup-info-head">
+								<div class="bg-popup-info-user">
+									<div class="bg-popup-info-user-image">
+										<a href="" title="" target="_blank" rel="nofollow">
+											<img src="" alt="">
+										</a>
+									</div>
+									<div class="bg-popup-info-user-name">
+										<a href="" title="" target="_blank" rel="nofollow"></a>
+									</div>
+								</div>
+								<div class="bg-popup-info-user-actions">
+									<a class="bg-instagram-follow" href="" target="_blank">Follow</a>
+								</div>
+								<div class="bg-popup-info-feed"> 
+									<a class="bg-instagram-likes" href="" target="_blank">
+										<svg viewBox="0 0 24 24">
+											<path d="M17.7,1.5c-2,0-3.3,0.5-4.9,2.1c0,0-0.4,0.4-0.7,0.7c-0.3-0.3-0.7-0.7-0.7-0.7c-1.6-1.6-3-2.1-5-2.1C2.6,1.5,0,4.6,0,8.3
+											c0,4.2,3.4,7.1,8.6,11.5c0.9,0.8,1.9,1.6,2.9,2.5c0.1,0.1,0.3,0.2,0.5,0.2s0.3-0.1,0.5-0.2c1.1-1,2.1-1.8,3.1-2.7
+											c4.8-4.1,8.5-7.1,8.5-11.4C24,4.6,21.4,1.5,17.7,1.5z M14.6,18.6c-0.8,0.7-1.7,1.5-2.6,2.3c-0.9-0.7-1.7-1.4-2.5-2.1
+											c-5-4.2-8.1-6.9-8.1-10.5c0-3.1,2.1-5.5,4.9-5.5c1.5,0,2.6,0.3,3.8,1.5c1,1,1.2,1.2,1.2,1.2C11.6,5.9,11.7,6,12,6.1
+											c0.3,0,0.5-0.2,0.7-0.4c0,0,0.2-0.2,1.2-1.3c1.3-1.3,2.1-1.5,3.8-1.5c2.8,0,4.9,2.4,4.9,5.5C22.6,11.9,19.4,14.6,14.6,18.6z"></path>
+										</svg>
+										<span></span>
+									</a>
+									<a class="bg-instagram-comments" href="" target="_blank">
+										<svg viewBox="0 0 24 24">
+											<path d="M1,11.9C1,17.9,5.8,23,12,23c1.9,0,3.7-1,5.3-1.8l5,1.3l0,0c0.1,0,0.1,0,0.2,0c0.4,0,0.6-0.3,0.6-0.6c0-0.1,0-0.1,0-0.2
+											l-1.3-4.9c0.9-1.6,1.4-2.9,1.4-4.8C23,5.8,18,1,12,1C5.9,1,1,5.9,1,11.9z M2.4,11.9c0-5.2,4.3-9.5,9.5-9.5c5.3,0,9.6,4.2,9.6,9.5
+											c0,1.7-0.5,3-1.3,4.4l0,0c-0.1,0.1-0.1,0.2-0.1,0.3c0,0.1,0,0.1,0,0.1l0,0l1.1,4.1l-4.1-1.1l0,0c-0.1,0-0.1,0-0.2,0
+											c-0.1,0-0.2,0-0.3,0.1l0,0c-1.4,0.8-3.1,1.8-4.8,1.8C6.7,21.6,2.4,17.2,2.4,11.9z"></path>
+										</svg>
+										<span></span>
+									</a>
+									<a class="bg-instagram-created-time" href="" target="_blank"></a>
+								</div>
+							</div>
+							<div class="bg-popup-info-comments"></div>
+						</div>
+					</div>
+				</div>
+				<div class="bg-popup-overlay"></div>
+				
+				<?php
+			else:	
+				echo "Item Not Found.";
+				
 			endif;
 		}
 	}
-	
-	/* filter */
-	if( $id == '' && $filter &&  $post_type != 'bg_instagram' ){
-		echo _filter_nav_render($atts);
-	}
-	
-	$_class = ( $light_box || $post_type == 'bg_gallery' ) ? 'bg-light-gallery' : '';
-	$_class .= ( $type == 'masonry' || $type == 'grid' ) ? ' bg-masonry-items' : '';
-	$_class .= ( $type == 'carousel' ) ? ' bg-owl-carousel' : '';
-	
 	?>
-	<div class="bg--items <?php echo $_class; ?>">
-		<?php 
-			if($type != 'carousel'){
-				?>
-				<div class="grid-sizer" style="width: <?php echo $width; ?>;"></div> 
-				<div class="gutter-sizer" style="width: <?php echo $_space; ?>;"></div>
-				<?php
-			}
-		
-			include BG_INC_PATH . 'shortcodes/layout/' . $type . '.php'; 
-		?>
-	</div>
-	<div class="bg--actions">
-		<div class="loading"></div>
-		<?php 
-			if($number != '-1' && $id == '' && $type != 'carousel' && $more){
-				$more_class = ($post_type == 'bg_instagram') ? 'load-more-instagram' : 'load-more-post';
-				?>
-				<div class="load-more <?php echo $more_class; ?>" data-offset="<?php echo $number; ?>" data-nextid='<?php echo $next_max_id; ?>' data-nexturl='<?php echo $next_url; ?>'><?php echo __( 'Load more', 'bears-grid' ); ?></div>
-				<?php
-			}
-		?>
-	</div>
-	<div class="bg-popup-wrapper">
-		<a href="#" class="bg-popup-close">
-			<svg viewBox="0 0 64 64">
-				<path d="M28.941,31.786L0.613,60.114c-0.787,0.787-0.787,2.062,0,2.849c0.393,0.394,0.909,0.59,1.424,0.59   c0.516,0,1.031-0.196,1.424-0.59l28.541-28.541l28.541,28.541c0.394,0.394,0.909,0.59,1.424,0.59c0.515,0,1.031-0.196,1.424-0.59   c0.787-0.787,0.787-2.062,0-2.849L35.064,31.786L63.41,3.438c0.787-0.787,0.787-2.062,0-2.849c-0.787-0.786-2.062-0.786-2.848,0   L32.003,29.15L3.441,0.59c-0.787-0.786-2.061-0.786-2.848,0c-0.787,0.787-0.787,2.062,0,2.849L28.941,31.786z"/>
-			</svg>
-		</a>
-		<div clas="bg-popup-inner">
-			<div class="bg-popup-media" style="background-image: url(<?php echo BG_DIR_URL ?>assets/images/16x9.png)"></div>
-			<div class="bg-popup-info">
-				<div class="bg-popup-info-head">
-					<div class="bg-popup-info-user">
-						<div class="bg-popup-info-user-image">
-							<a href="" title="" target="_blank" rel="nofollow">
-								<img src="" alt="">
-							</a>
-						</div>
-						<div class="bg-popup-info-user-name">
-							<a href="" title="" target="_blank" rel="nofollow"></a>
-						</div>
-					</div>
-					<div class="bg-popup-info-user-actions">
-						<a class="bg-instagram-follow" href="" target="_blank">Follow</a>
-					</div>
-					<div class="bg-popup-info-feed"> 
-						<a class="bg-instagram-likes" href="" target="_blank">
-							<svg viewBox="0 0 24 24">
-								<path d="M17.7,1.5c-2,0-3.3,0.5-4.9,2.1c0,0-0.4,0.4-0.7,0.7c-0.3-0.3-0.7-0.7-0.7-0.7c-1.6-1.6-3-2.1-5-2.1C2.6,1.5,0,4.6,0,8.3
-								c0,4.2,3.4,7.1,8.6,11.5c0.9,0.8,1.9,1.6,2.9,2.5c0.1,0.1,0.3,0.2,0.5,0.2s0.3-0.1,0.5-0.2c1.1-1,2.1-1.8,3.1-2.7
-								c4.8-4.1,8.5-7.1,8.5-11.4C24,4.6,21.4,1.5,17.7,1.5z M14.6,18.6c-0.8,0.7-1.7,1.5-2.6,2.3c-0.9-0.7-1.7-1.4-2.5-2.1
-								c-5-4.2-8.1-6.9-8.1-10.5c0-3.1,2.1-5.5,4.9-5.5c1.5,0,2.6,0.3,3.8,1.5c1,1,1.2,1.2,1.2,1.2C11.6,5.9,11.7,6,12,6.1
-								c0.3,0,0.5-0.2,0.7-0.4c0,0,0.2-0.2,1.2-1.3c1.3-1.3,2.1-1.5,3.8-1.5c2.8,0,4.9,2.4,4.9,5.5C22.6,11.9,19.4,14.6,14.6,18.6z"></path>
-							</svg>
-							<span></span>
-						</a>
-						<a class="bg-instagram-comments" href="" target="_blank">
-							<svg viewBox="0 0 24 24">
-								<path d="M1,11.9C1,17.9,5.8,23,12,23c1.9,0,3.7-1,5.3-1.8l5,1.3l0,0c0.1,0,0.1,0,0.2,0c0.4,0,0.6-0.3,0.6-0.6c0-0.1,0-0.1,0-0.2
-								l-1.3-4.9c0.9-1.6,1.4-2.9,1.4-4.8C23,5.8,18,1,12,1C5.9,1,1,5.9,1,11.9z M2.4,11.9c0-5.2,4.3-9.5,9.5-9.5c5.3,0,9.6,4.2,9.6,9.5
-								c0,1.7-0.5,3-1.3,4.4l0,0c-0.1,0.1-0.1,0.2-0.1,0.3c0,0.1,0,0.1,0,0.1l0,0l1.1,4.1l-4.1-1.1l0,0c-0.1,0-0.1,0-0.2,0
-								c-0.1,0-0.2,0-0.3,0.1l0,0c-1.4,0.8-3.1,1.8-4.8,1.8C6.7,21.6,2.4,17.2,2.4,11.9z"></path>
-							</svg>
-							<span></span>
-						</a>
-						<a class="bg-instagram-created-time" href="" target="_blank"></a>
-					</div>
-				</div>
-				<div class="bg-popup-info-comments"></div>
-			</div>
-		</div>
-	</div>
-	<div class="bg-popup-overlay"></div>
 </div>
