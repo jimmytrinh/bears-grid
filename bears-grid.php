@@ -7,8 +7,7 @@ Version: 1.0.1
 Author: BearsThemes
 Author URI:
 */
-/* error_reporting(E_ALL);
-ini_set('display_errors', 1); */
+
 class BG_Functionality {
 		/**
      * Constructor
